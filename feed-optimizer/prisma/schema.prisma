@@ -1,0 +1,94 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- 1. Lookup Tables ---
+
+model Animal {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  // Relations
+  feedLimits   AnimalFeedLimit[]
+  requirements AnimalRequirement[]
+}
+
+model MaterialType {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  material Material[]
+}
+
+model Nutrient {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  unit String
+
+  nutrientValues MaterialNutrientValue[]
+  requirements   AnimalRequirement[]
+}
+
+// --- 2. Core Data Tables ---
+
+model Material {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  price_kg Decimal @default(0.0000) @db.Decimal(10, 4)
+
+  // FK
+  materialTypeId Int
+  materialType   MaterialType @relation(fields: [materialTypeId], references: [id])
+
+  nutrientValues MaterialNutrientValue[]
+  feedLimits     AnimalFeedLimit[]
+}
+
+// --- 3. Junction Tables ---
+
+model MaterialNutrientValue {
+  id    Int     @id @default(autoincrement())
+  value Decimal @db.Decimal(10, 4)
+
+  // FKs
+  materialId Int
+  nutrientId Int
+  material   Material @relation(fields: [materialId], references: [id])
+  nutrient   Nutrient @relation(fields: [nutrientId], references: [id])
+
+  @@unique([materialId, nutrientId])
+}
+
+model AnimalFeedLimit {
+  id        Int     @id @default(autoincrement())
+  min_usage Decimal @default(0.00) @db.Decimal(5, 2)
+  max_usage Decimal @default(100.00) @db.Decimal(5, 2)
+
+  // FKs
+  animalId   Int
+  materialId Int
+  animal     Animal   @relation(fields: [animalId], references: [id])
+  material   Material @relation(fields: [materialId], references: [id])
+
+  @@unique([animalId, materialId])
+}
+
+model AnimalRequirement {
+  id             Int     @id @default(autoincrement())
+  required_value Decimal @db.Decimal(10, 4)
+
+  // FKs
+  animalId   Int
+  nutrientId Int
+  animal     Animal   @relation(fields: [animalId], references: [id])
+  nutrient   Nutrient @relation(fields: [nutrientId], references: [id])
+
+  @@unique([animalId, nutrientId])
+}
