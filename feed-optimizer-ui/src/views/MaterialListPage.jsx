@@ -51,12 +51,9 @@ export default function MaterialListPage({ onSelectMaterial }) {
               {materials.map(m => (
                 <tr key={m.id} className="hover:bg-[#F8FAFC] transition-colors group">
                   <td className="px-6 py-4">
-                    <button 
-                      onClick={() => onSelectMaterial(m.id)}
-                      className="font-bold text-[#12171D] hover:text-[#2E7D32] transition-colors text-left"
-                    >
+                    <td className="px-6 py-4 font-bold text-[#12171D]">
                       {m.name}
-                    </button>
+                    </td>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-[10px] font-bold uppercase px-2 py-1 bg-gray-100 rounded text-gray-500">
