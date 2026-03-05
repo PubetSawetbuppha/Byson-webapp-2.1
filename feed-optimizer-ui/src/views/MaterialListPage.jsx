@@ -67,13 +67,13 @@ export default function MaterialListPage({ onSelectMaterial }) {
                     ฿{Number(m.price_kg ?? m.pricePerKg ?? 0).toFixed(2)}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button 
+                    {/* <button 
                       onClick={() => onSelectMaterial(m.id)}
                       className="inline-flex items-center gap-1 text-[#2E7D32] font-bold text-sm hover:underline"
                     >
                       Edit Details
                       <ChevronRight size={16} />
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))}
